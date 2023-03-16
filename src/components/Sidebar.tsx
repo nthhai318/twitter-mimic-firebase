@@ -14,7 +14,7 @@ import {
 
 export default function Sidebar() {
   return (
-    <div className="bg-slate-500/20 w-[300px] flex flex-col gap-7">
+    <div className="bg-slate-500/20 w-[300px] flex flex-col gap-7 fixed h-full">
       {/* Incorporation Logo */}
       <Image
         src="/random.svg"
@@ -42,7 +42,7 @@ export default function Sidebar() {
       </button>
 
       {/* User Profile */}
-      <div className="flex rounded-full  p-2 w-[210px] mx-auto justify-center items-center gap-2 hover:bg-slate-500/20 hover:duration-100 duration-75">
+      <div className="flex rounded-full  p-2 w-[210px] mx-auto justify-center items-center gap-2 hover:bg-slate-500/20 hover:duration-100 duration-75 absolute bottom-5 left-0 right-0">
         <Image
           src="https://i1-giaitri.vnecdn.net/2021/05/19/Emmawatson1-1621400705-7182-1621400757.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=ExMIZCSEwwZDEnqBYnlYjw"
           height={50}
