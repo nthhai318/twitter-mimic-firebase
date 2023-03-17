@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import Feeds from "@/components/Feeds";
 import { fetchNews, getNews } from "@/utils/getNews";
 import Widgets from "@/components/Widgets";
+import Sidebar from "@/components/Sidebar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,6 +17,7 @@ export default function Home({ newsResult }: { newsResult: fetchNews }) {
         <meta name="description" content="Something resembles twitter?" />
       </Head>
       <main className="flex">
+        <Sidebar />
         <Feeds />
         <Widgets news={news} />
       </main>
