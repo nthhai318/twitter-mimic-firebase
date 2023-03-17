@@ -23,7 +23,6 @@ export type New = {
 };
 
 export async function getNews() {
-  console.log(api);
   const res = await fetch(api);
   
   if (!res.ok) {

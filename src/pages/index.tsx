@@ -27,6 +27,6 @@ export async function getStaticProps() {
   const newsResult = await getNews();
   return {
     props: { newsResult },
-    revalidate: 43200,
+    revalidate: 3600,
   };
 }

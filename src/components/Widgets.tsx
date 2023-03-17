@@ -4,7 +4,7 @@ import { useState } from "react";
 import { FiSearch } from "react-icons/fi";
 
 export default function Widgets({ news }: { news: New[] }) {
-  const [numOfNews, setNumOfNews] = useState<number>(5);
+  const [numOfNews, setNumOfNews] = useState<number>(3);
   const displayNew = news.slice(0, numOfNews);
 
   return (
@@ -20,7 +20,7 @@ export default function Widgets({ news }: { news: New[] }) {
       </div>
 
       {/* News Widget */}
-      <div className="mt-5 py-3 rounded-lg flex flex-col gap-3 bg-slate-400/10">
+      <div className="mt-5 py-3 rounded-xl flex flex-col gap-3 bg-slate-400/10">
         <p className="font-bold px-3 mb-3 text-[1.1rem] lg:text-[1.2rem]">
           Trending News
         </p>
@@ -41,10 +41,10 @@ export default function Widgets({ news }: { news: New[] }) {
         </div>
         {numOfNews < news.length && (
           <button
-            className="font-bold text-blue-900"
+            className="font-bold text-blue-900 "
             onClick={() =>
               setNumOfNews(() =>
-                numOfNews + 5 <= news.length ? numOfNews + 5 : news.length
+                numOfNews + 3 <= news.length ? numOfNews + 3 : news.length
               )
             }
           >
