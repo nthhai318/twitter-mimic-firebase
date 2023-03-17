@@ -43,13 +43,13 @@ export default function Post({ post }: { post: Post }) {
           </div>
         </div>
         <div>{text}</div>
-        <div>
+        <div className="flex w-full justify-center">
           <Image
             src={img}
             alt="Image"
             width={1000}
             height={1000}
-            className="w-full h-auto rounded-lg object-cover"
+            className="max-w-full w-auto h-auto max-h-[500px] rounded-lg object-contain"
           />
         </div>
         <div className="flex justify-between">

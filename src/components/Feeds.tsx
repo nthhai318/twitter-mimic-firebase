@@ -11,7 +11,8 @@ const dunmmyData = [
     username: "@Emma",
     userImg:
       "https://i1-ngoisao.vnecdn.net/2013/03/21/emma2-568345-1368249026.jpg?w=460&h=0&q=100&dpr=2&fit=crop&s=uJzCHUGZzRvsamRPmGleAw",
-    img: "https://images2.imgbox.com/f6/1f/kKL65zMF_o.jpg",
+    // img: "https://images2.imgbox.com/f6/1f/kKL65zMF_o.jpg",
+    img: "https://images.unsplash.com/photo-1587410131477-f01b22c59e1c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dGFsbCUyMHRvd2VyfGVufDB8fDB8fA%3D%3D&w=1000&q=80",
     text: "What a beach!",
     timestamp: "3 hours ago",
   },
@@ -71,14 +72,11 @@ function Input() {
         <div className="">
           <textarea
             className="w-full outline-none p-1 divide-y resize-none"
-            rows={3}
             placeholder="What's happening?"
+            rows={1}
             onChange={(e) => {
               e.target.style.height = "0";
-              e.target.style.height = `${Math.max(
-                e.target.scrollHeight,
-                80
-              )}px`;
+              e.target.style.height = `${e.target.scrollHeight}px`;
             }}
           />
         </div>

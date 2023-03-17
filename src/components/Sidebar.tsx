@@ -27,7 +27,7 @@ export default function Sidebar() {
         />
 
         {/* SidebarMenu Items */}
-        <div className=" flex flex-col gap-3 w-fit mx-auto">
+        <div className=" flex flex-col gap-1 w-fit mx-auto">
           <MenuItem menu="home" Icon={HiOutlineHome} />
           <MenuItem menu="explore" Icon={HiOutlineHashtag} />
           <MenuItem menu="notifications" Icon={HiOutlineBell} />
@@ -54,7 +54,7 @@ export default function Sidebar() {
 function MenuItem({ Icon, menu }: { Icon: IconType; menu: string }) {
   return (
     <div>
-      <div className="text-[1.5rem] h-[56px] flex items-center rounded-full p-2 hover:bg-slate-500/20 hover:duration-100 duration-75 ">
+      <div className="text-[1.5rem] h-[48px] flex items-center rounded-full p-1 hover:bg-slate-500/20 hover:duration-100 duration-75 ">
         <Icon size={"1em"} className="inline-block mx-2 mt-1" />
         <span className="hidden lg:inline-block capitalize pr-5">{menu}</span>
       </div>
