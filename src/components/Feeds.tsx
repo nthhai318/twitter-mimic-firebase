@@ -56,8 +56,8 @@ export default function Feeds() {
         <Post key={post.id} post={post} />
       ))} */}
       {tweets.map((tweet) => (
-        <div key={tweet.data().id}>
-          <Post post={tweet.data()} />
+        <div key={tweet.id}>
+          <Post post={tweet.data()} id={tweet.id} />
         </div>
       ))}
     </div>

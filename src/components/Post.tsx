@@ -1,8 +1,23 @@
 import Image from "next/image";
 import { HiOutlineChat, HiOutlineDotsHorizontal } from "react-icons/hi";
-import { AiOutlineHeart, AiOutlineRetweet } from "react-icons/ai";
+import {
+  AiOutlineHeart,
+  AiOutlineRetweet,
+  AiTwotoneHeart,
+} from "react-icons/ai";
 import { FiBarChart2 } from "react-icons/fi";
 import { MdOutlineIosShare } from "react-icons/md";
+import {
+  collection,
+  doc,
+  onSnapshot,
+  setDoc,
+  DocumentData,
+  deleteDoc,
+} from "firebase/firestore";
+import { db } from "../../firebase";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 
 type Post = {
   id: string;
@@ -16,8 +31,37 @@ type Post = {
   };
 };
 
-export default function Post({ post }: { post: Post }) {
+export default function Post({ post, id }: { post: Post; id: string }) {
   const { user, userImg, image, content, timestamp } = post;
+  const { data: sessionData } = useSession();
+  const [likes, setLikes] = useState<DocumentData[]>([]);
+  const [hasLiked, setHasLiked] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      collection(db, "tweets", id, "likes"),
+      (snapshot) => setLikes(snapshot.docs)
+    );
+  }, [id]);
+
+  useEffect(() => {
+    setHasLiked(
+      likes.findIndex((like) => like.id === sessionData?.user.uid) !== -1
+        ? true
+        : false
+    );
+  }, [likes, sessionData?.user.uid]);
+
+  const likePost = async () => {
+    if (hasLiked) {
+      await deleteDoc(doc(db, "tweets", id, "likes", sessionData?.user.uid!));
+    } else {
+      await setDoc(doc(db, "tweets", id, "likes", sessionData?.user.uid!), {
+        username: sessionData?.user.name,
+      });
+    }
+  };
+
   return (
     <div className="flex px-4 py-2 gap-4 hover:bg-slate-400/10">
       <Image
@@ -53,10 +97,19 @@ export default function Post({ post }: { post: Post }) {
             />
           </div>
         )}
-        <div className="flex justify-between">
+        <div className="flex justify-between items-center px-5">
           <HiOutlineChat size={20} />
           <AiOutlineRetweet size={20} />
-          <AiOutlineHeart size={20} />
+          <div className="flex gap-3 items-center">
+            {hasLiked ? (
+              <AiTwotoneHeart color="red" onClick={likePost} size={20} />
+            ) : (
+              <AiOutlineHeart size={20} onClick={likePost} />
+            )}
+            <span className={hasLiked ? "text-red-700" : ""}>
+              {likes.length}
+            </span>
+          </div>
           <FiBarChart2 size={20} />
           <MdOutlineIosShare size={20} />
         </div>

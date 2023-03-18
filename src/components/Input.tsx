@@ -13,6 +13,7 @@ import {
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { AiOutlineCloseCircle } from "react-icons/ai";
+import { createId } from "@paralleldrive/cuid2";
 
 export default function Input({ sessionData }: { sessionData: Session }) {
   const [input, setInput] = useState<string>("");
@@ -21,7 +22,7 @@ export default function Input({ sessionData }: { sessionData: Session }) {
 
   const sendTweet = async () => {
     const docRef = await addDoc(collection(db, "tweets"), {
-      id: sessionData.user.uid,
+      id: createId(),
       user: sessionData.user.name,
       email: sessionData.user.email,
       content: input,
@@ -43,10 +44,10 @@ export default function Input({ sessionData }: { sessionData: Session }) {
     setTweetImg(null);
   };
 
-  // Fix type any
+  // TODO: Fix type any
   const addImagetoTweet = (e: any) => {
     const reader = new FileReader();
-    if (e.target.files) {
+    if (e.target.files[0]) {
       reader.readAsDataURL(e.target.files[0]);
     }
     reader.onload = (readerEvent) => {

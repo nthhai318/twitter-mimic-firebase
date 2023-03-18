@@ -16,7 +16,7 @@ export default function Home({ newsResult }: { newsResult: fetchNews }) {
         <title>Twitter Mimic</title>
         <meta name="description" content="Something resembles twitter?" />
       </Head>
-      <main className="flex">
+      <main className="flex w-full mx-auto">
         <Sidebar />
         <Feeds />
         <Widgets news={news} />
