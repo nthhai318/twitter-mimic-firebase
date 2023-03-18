@@ -1,6 +1,7 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { SessionProvider } from "next-auth/react";
+import { RecoilRoot } from "recoil";
 
 export default function App({
   Component,
@@ -8,9 +9,11 @@ export default function App({
 }: AppProps) {
   return (
     <div className="flex">
-      <SessionProvider session={session}>
-        <Component {...pageProps} />
-      </SessionProvider>
+      <RecoilRoot>
+        <SessionProvider session={session}>
+          <Component {...pageProps} />
+        </SessionProvider>
+      </RecoilRoot>
     </div>
   );
 }
