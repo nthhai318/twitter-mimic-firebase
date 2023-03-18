@@ -1,8 +1,9 @@
 import Image from "next/image";
 import { IoImageOutline } from "react-icons/io5";
 import { HiOutlineFaceSmile } from "react-icons/hi2";
-import GetFeeds from "./Post";
 import Post from "./Post";
+import { useSession } from "next-auth/react";
+import { Session } from "next-auth";
 
 const dunmmyData = [
   {
@@ -29,14 +30,21 @@ const dunmmyData = [
 ];
 
 export default function Feeds() {
+  const { data: sessionData } = useSession();
   return (
-    <div className=" sm:ml-[100px] lg:ml-[300px] min-w-[300px] relative flex-1 max-w-[600px] h-[10000px] divide-[rgb(239,243,244)] divide-y  border-r border-l border-[rgb(239,243,244)]">
-      <div className="sticky w-full top-0  backdrop-blur-md">
+    <div className=" sm:ml-[100px] lg:ml-[300px] min-w-[300px] relative flex-1 max-w-[800px] divide-[rgb(239,243,244)] divide-y  border-r border-l border-[rgb(239,243,244)] xl:ml-[400px]">
+      <button
+        onClick={() => {
+          document.body.scrollTop = 0;
+          document.documentElement.scrollTop = 0;
+        }}
+        className="sticky w-full top-0  backdrop-blur-md"
+      >
         {/* Home */}
         <div className="flex text-[1.5rem] h-14 items-center px-4 cursor-pointer ">
           <p className="font-bold ">Home</p>
         </div>
-        {/* Tab Suggest-For you / Following */}
+        {/* Tab Suggest-For you / Following
         <div className="grid grid-cols-2 h-14 items-center cursor-pointer">
           <div className="w-full h-full hover: hover:duration-200 duration-200 hover:bg-slate-500/20">
             <div className="h-full border-b-4 border-black mx-auto w-fit flex items-center ">
@@ -48,9 +56,9 @@ export default function Feeds() {
               <span className="">Following</span>
             </div>
           </div>
-        </div>
-      </div>
-      <Input />
+        </div> */}
+      </button>
+      {sessionData && <Input sessionData={sessionData} />}
       {dunmmyData.map((post) => (
         <Post key={post.id} post={post} />
       ))}
@@ -58,11 +66,11 @@ export default function Feeds() {
   );
 }
 
-function Input() {
+function Input({ sessionData }: { sessionData: Session }) {
   return (
-    <div className="flex gap-4 p-4 divide-y-0 overflow-hidden">
+    <div className="flex gap-4 p-4 divide-y-0 overflow-hidden ">
       <Image
-        src="https://i1-giaitri.vnecdn.net/2021/05/19/Emmawatson1-1621400705-7182-1621400757.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=ExMIZCSEwwZDEnqBYnlYjw"
+        src={sessionData.user?.image!}
         height={50}
         width={50}
         alt="user-ava"
@@ -70,6 +78,9 @@ function Input() {
       />
       <div className="flex-1 flex flex-col divide-y">
         <div className="">
+          <p className="font-bold">{sessionData.user?.name}</p>
+        </div>
+        <div className="py-3">
           <textarea
             className="w-full outline-none p-1 divide-y resize-none"
             placeholder="What's happening?"
@@ -81,7 +92,7 @@ function Input() {
           />
         </div>
         <div className="flex justify-between items-center p-2">
-          <div className="flex gap-3 p-2">
+          <div className="flex gap-5 p-2">
             <IoImageOutline size={20} />
             <HiOutlineFaceSmile size={20} />
           </div>

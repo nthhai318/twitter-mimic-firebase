@@ -17,7 +17,7 @@ type Post = {
 export default function Post({ post }: { post: Post }) {
   const { id, name, username, userImg, img, text, timestamp } = post;
   return (
-    <div className="flex px-4 py-2 gap-4">
+    <div className="flex px-4 py-2 gap-4 hover:bg-slate-400/10">
       <Image
         src={userImg}
         height={50}

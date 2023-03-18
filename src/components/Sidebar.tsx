@@ -8,14 +8,19 @@ import {
   HiOutlineDotsCircleHorizontal,
   HiOutlineHashtag,
   HiOutlineHome,
+  HiOutlineLogin,
   HiOutlineMail,
   HiOutlineUser,
 } from "react-icons/hi";
 import { GiFeather } from "react-icons/gi";
+import { signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function Sidebar() {
+  const { data: sessionData } = useSession();
+  const router = useRouter();
   return (
-    <div className=" w-0 sm:w-[100px] lg:w-[300px] flex flex-col justify-between fixed h-full overflow-y-auto">
+    <div className="w-0 xl:ml-[100px] sm:w-[100px] lg:w-[300px] flex flex-col justify-between fixed h-full overflow-y-auto">
       <div className="flex flex-col gap-7">
         {/* Incorporation Logo */}
         <Image
@@ -37,12 +42,24 @@ export default function Sidebar() {
           <MenuItem menu="profile" Icon={HiOutlineUser} />
           <MenuItem menu="more" Icon={HiOutlineDotsCircleHorizontal} />
         </div>
-
-        {/* Tweet button */}
-        <button className="rounded-full h-16 sm:w-16 lg:w-[150px] text-white text-[1.5rem] font-semibold bg-[rgb(29,155,240)] flex items-center justify-center mx-auto">
-          <span className="lg:inline-block hidden">Tweet</span>
-          <GiFeather size={"1em"} className="inline-block lg:hidden" />
-        </button>
+        {sessionData ? (
+          // Tweet button
+          <button className="rounded-full h-16 sm:w-16 lg:w-[150px] text-white text-[1.5rem] font-semibold bg-[rgb(29,155,240)] flex items-center justify-center mx-auto">
+            <span className="lg:inline-block hidden">Tweet</span>
+            <GiFeather size={"1em"} className="inline-block lg:hidden" />
+          </button>
+        ) : (
+          //Login button
+          <button
+            className="rounded-full h-16 sm:w-16 lg:w-[150px] text-white text-[1.5rem] font-semibold bg-[rgb(29,155,240)] flex items-center justify-center mx-auto"
+            onClick={() => {
+              router.push("/auth/signin");
+            }}
+          >
+            <span className="lg:inline-block hidden">SignIn</span>
+            <HiOutlineLogin size={"1em"} className="inline-block lg:hidden" />
+          </button>
+        )}
       </div>
 
       {/* User Profile */}
@@ -63,19 +80,27 @@ function MenuItem({ Icon, menu }: { Icon: IconType; menu: string }) {
 }
 
 function UserProfile() {
+  const { data: sessionData } = useSession();
+  console.log(sessionData);
   return (
-    <div className="flex rounded-full  p-2 w-fit lg:w-[210px] mx-auto justify-center items-center gap-2 hover:bg-slate-500/20 hover:duration-100 duration-75  mt-7 mb-5">
-      <Image
-        src="https://i1-giaitri.vnecdn.net/2021/05/19/Emmawatson1-1621400705-7182-1621400757.jpg?w=1200&h=0&q=100&dpr=1&fit=crop&s=ExMIZCSEwwZDEnqBYnlYjw"
-        height={50}
-        width={50}
-        alt="user-ava"
-        className="rounded-full w-[50px] h-[50px] object-cover"
-      />
-      <div className="flex-1 hidden lg:inline-block">
-        <p className="font-bold">User Name</p>
-        <p>@username</p>
-      </div>
+    <div>
+      {sessionData && (
+        <div className="flex rounded-full  p-2 pr-5 w-fit max-w-[210px] mx-auto justify-start items-center gap-2 hover:bg-slate-500/20 hover:duration-100 duration-75  mt-7 mb-5 overflow-hidden">
+          <Image
+            src={sessionData?.user?.image!}
+            height={50}
+            width={50}
+            alt="user-ava"
+            className="rounded-full w-[50px] h-[50px] object-cover"
+          />
+          <div className="flex-1 hidden lg:inline-block">
+            <p className="font-bold">{sessionData?.user?.name}</p>
+            <button className="hover:underline" onClick={() => signOut()}>
+              Sign out
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
