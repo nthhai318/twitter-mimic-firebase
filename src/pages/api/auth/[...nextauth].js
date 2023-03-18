@@ -15,5 +15,12 @@ export default NextAuth({
   ],
   pages: {
     signIn: "/auth/signin"
-  }
+  },
+  secret: process.env.NEXT_AUTH_SECRET,
+  callbacks: {
+    async session({ session, token }) {
+      session.user.uid = token.sub;
+      return session;
+    },
+  },
 })

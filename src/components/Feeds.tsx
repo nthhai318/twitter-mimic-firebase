@@ -1,9 +1,6 @@
-import Image from "next/image";
-import { IoImageOutline } from "react-icons/io5";
-import { HiOutlineFaceSmile } from "react-icons/hi2";
 import Post from "./Post";
 import { useSession } from "next-auth/react";
-import { Session } from "next-auth";
+import Input from "./Input";
 
 const dunmmyData = [
   {
@@ -12,8 +9,8 @@ const dunmmyData = [
     username: "@Emma",
     userImg:
       "https://i1-ngoisao.vnecdn.net/2013/03/21/emma2-568345-1368249026.jpg?w=460&h=0&q=100&dpr=2&fit=crop&s=uJzCHUGZzRvsamRPmGleAw",
-    // img: "https://images2.imgbox.com/f6/1f/kKL65zMF_o.jpg",
-    img: "https://images.unsplash.com/photo-1587410131477-f01b22c59e1c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dGFsbCUyMHRvd2VyfGVufDB8fDB8fA%3D%3D&w=1000&q=80",
+    img: "https://images2.imgbox.com/f6/1f/kKL65zMF_o.jpg",
+    // img: "https://images.unsplash.com/photo-1587410131477-f01b22c59e1c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dGFsbCUyMHRvd2VyfGVufDB8fDB8fA%3D%3D&w=1000&q=80",
     text: "What a beach!",
     timestamp: "3 hours ago",
   },
@@ -62,48 +59,6 @@ export default function Feeds() {
       {dunmmyData.map((post) => (
         <Post key={post.id} post={post} />
       ))}
-    </div>
-  );
-}
-
-function Input({ sessionData }: { sessionData: Session }) {
-  return (
-    <div className="flex gap-4 p-4 divide-y-0 overflow-hidden ">
-      <Image
-        src={sessionData.user?.image!}
-        height={50}
-        width={50}
-        alt="user-ava"
-        className="rounded-full w-[50px] h-[50px] object-cover"
-      />
-      <div className="flex-1 flex flex-col divide-y">
-        <div className="">
-          <p className="font-bold">{sessionData.user?.name}</p>
-        </div>
-        <div className="py-3">
-          <textarea
-            className="w-full outline-none p-1 divide-y resize-none"
-            placeholder="What's happening?"
-            rows={1}
-            onChange={(e) => {
-              e.target.style.height = "0";
-              e.target.style.height = `${e.target.scrollHeight}px`;
-            }}
-          />
-        </div>
-        <div className="flex justify-between items-center p-2">
-          <div className="flex gap-5 p-2">
-            <IoImageOutline size={20} />
-            <HiOutlineFaceSmile size={20} />
-          </div>
-          <button
-            disabled
-            className="rounded-full bg-[rgb(29,155,240)] font-semibold px-4 py-2 text-white disabled:opacity-50"
-          >
-            Tweet
-          </button>
-        </div>
-      </div>
     </div>
   );
 }

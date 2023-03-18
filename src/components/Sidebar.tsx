@@ -81,7 +81,6 @@ function MenuItem({ Icon, menu }: { Icon: IconType; menu: string }) {
 
 function UserProfile() {
   const { data: sessionData } = useSession();
-  console.log(sessionData);
   return (
     <div>
       {sessionData && (
