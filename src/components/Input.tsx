@@ -22,7 +22,7 @@ export default function Input({ sessionData }: { sessionData: Session }) {
 
   const sendTweet = async () => {
     const docRef = await addDoc(collection(db, "tweets"), {
-      id: createId(),
+      id: sessionData.user.uid,
       user: sessionData.user.name,
       email: sessionData.user.email,
       content: input,
@@ -118,7 +118,7 @@ export default function Input({ sessionData }: { sessionData: Session }) {
                 type="file"
                 hidden
                 ref={imgFile}
-                accept="image/png, image/gif, image/jpeg"
+                accept="image/png, image/gif, image/jpeg, image/webp"
                 onChange={addImagetoTweet}
               />
             </div>

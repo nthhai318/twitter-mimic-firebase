@@ -6,7 +6,7 @@ import {
   AiTwotoneHeart,
 } from "react-icons/ai";
 import { FiBarChart2 } from "react-icons/fi";
-import { MdOutlineIosShare } from "react-icons/md";
+import { RiDeleteBinLine } from "react-icons/ri";
 import {
   collection,
   doc,
@@ -15,9 +15,10 @@ import {
   DocumentData,
   deleteDoc,
 } from "firebase/firestore";
-import { db } from "../../firebase";
+import { db, storage } from "../../firebase";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
+import { deleteObject, ref } from "firebase/storage";
 
 type Post = {
   id: string;
@@ -62,6 +63,13 @@ export default function Post({ post, id }: { post: Post; id: string }) {
     }
   };
 
+  const deletePost = async () => {
+    if (window.confirm("Are you sure you want to delete this tweet?")) {
+      deleteDoc(doc(db, "tweets", id));
+      deleteObject(ref(storage, `tweets/${id}/img`));
+    }
+  };
+
   return (
     <div className="flex px-4 py-2 gap-4 hover:bg-slate-400/10">
       <Image
@@ -73,11 +81,11 @@ export default function Post({ post, id }: { post: Post; id: string }) {
       />
       <div className="flex flex-1 flex-col gap-3 mb-5 overflow-hidden">
         <div className="flex justify-between items-center ">
-          <div className="flex gap-[1ch] justify-start flex-shrink">
+          <div className="flex gap-[1ch] justify-start items-center flex-shrink">
             <span className="flex-shrink font-bold inline-block overflow-hidden whitespace-nowrap">
               {user}
             </span>
-            <span className="flex-shrink whitespace-nowrap inline-block overflow-hidden">
+            <span className="flex-shrink whitespace-nowrap inline-block overflow-hidden text-sm">
               {timestamp && displayDate(Math.floor(timestamp.seconds / 60))}
             </span>
           </div>
@@ -97,7 +105,7 @@ export default function Post({ post, id }: { post: Post; id: string }) {
             />
           </div>
         )}
-        <div className="flex justify-between items-center px-5">
+        <div className="grid grid-cols-5 justify-center gap-5 items-center px-5">
           <HiOutlineChat size={20} />
           <AiOutlineRetweet size={20} />
           <div className="flex gap-3 items-center">
@@ -111,7 +119,9 @@ export default function Post({ post, id }: { post: Post; id: string }) {
             </span>
           </div>
           <FiBarChart2 size={20} />
-          <MdOutlineIosShare size={20} />
+          {sessionData?.user.uid === post.id && (
+            <RiDeleteBinLine onClick={deletePost} size={20} />
+          )}
         </div>
       </div>
     </div>
