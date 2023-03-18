@@ -3,7 +3,8 @@ const api = `https://newsdata.io/api/1/news?apikey=${process.env.NEWS_API}&count
 export type fetchNews = {
   status: string,
   totalResults: number,
-  results: New[],
+  results: New[] | FailNews,
+  code?: string,
 }
 
 export type New = {
@@ -22,12 +23,17 @@ export type New = {
   "language": string
 };
 
+export type FailNews = {
+  message: string,
+  code: string,
+}
+
 export async function getNews() {
   const res = await fetch(api);
   
-  if (!res.ok) {
-    throw new Error("cannot fetch news");
-  }
+  // if (!res.ok) {
+  //   throw new Error("cannot fetch news");
+  // }
   const data:fetchNews = await res.json();
   return data;
 }

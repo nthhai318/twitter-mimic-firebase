@@ -1,12 +1,15 @@
-import { New, fetchNews, getNews } from "@/utils/getNews";
+import { FailNews, New, fetchNews, getNews } from "@/utils/getNews";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
 import { FiSearch } from "react-icons/fi";
 
-export default function Widgets({ news }: { news: New[] }) {
+export default function Widgets({ news }: { news: New[] | FailNews }) {
   const [numOfNews, setNumOfNews] = useState<number>(3);
-  const displayNew = news.slice(0, numOfNews);
+  let displayNew;
+  if (!("message" in news)) {
+    displayNew = news.slice(0, numOfNews);
+  }
 
   return (
     <div className="p-5 flex-shrink min-w-[200px] max-w-[600px] w-[20vw]   hidden md:inline">
@@ -26,26 +29,37 @@ export default function Widgets({ news }: { news: New[] }) {
           Trending News
         </p>
         <div className="flex flex-col gap-0">
-          <AnimatePresence mode="wait">
-            {displayNew.map((article, idx) => (
-              <motion.div
-                initial={{ opacity: 0, x: 100 }}
-                animate={{ opacity: 1, x: 0, transition: { delay: 0.2 * idx } }}
-                exit={{ opacity: 0, x: 100 }}
-                className="py-2 px-3 group hover:bg-slate-500/10"
-                key={article.link}
-              >
-                <Link className=" flex flex-col gap-0" href={article.link}>
-                  <p className="font-semibold group-hover:underline">
-                    {article.title}
-                  </p>
-                  <p className="italic ">{article.source_id}</p>
-                </Link>
-              </motion.div>
-            ))}
+          <AnimatePresence>
+            {displayNew &&
+              displayNew.map((article, idx) => (
+                <motion.div
+                  initial={{ opacity: 0, x: 100 }}
+                  animate={{
+                    opacity: 1,
+                    x: 0,
+                    transition: { delay: 0.2 * idx },
+                  }}
+                  exit={{ opacity: 0, x: 100 }}
+                  className="py-2 px-3 group hover:bg-slate-500/10"
+                  key={article.link}
+                >
+                  <Link className=" flex flex-col gap-0" href={article.link}>
+                    <p className="font-semibold group-hover:underline">
+                      {article.title}
+                    </p>
+                    <p className="italic ">{article.source_id}</p>
+                  </Link>
+                </motion.div>
+              ))}
+            {"message" in news && (
+              <div className="mt-[-4px] pb-2 px-3">
+                Cannot fetch news due to exceeding API quota. Try again
+                tomorrow.
+              </div>
+            )}
           </AnimatePresence>
         </div>
-        {numOfNews < news.length && (
+        {!("message" in news) && numOfNews < news.length && (
           <button
             className="font-bold text-blue-900 "
             onClick={() =>

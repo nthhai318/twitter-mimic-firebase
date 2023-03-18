@@ -54,7 +54,7 @@ export default function Feeds() {
       </button>
       {sessionData && <Input sessionData={sessionData} />}
 
-      <AnimatePresence mode="wait">
+      <AnimatePresence>
         {tweets.map((tweet) => (
           <motion.div
             key={tweet.id}

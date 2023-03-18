@@ -5,7 +5,6 @@ import {
   AiOutlineRetweet,
   AiTwotoneHeart,
 } from "react-icons/ai";
-import { FiBarChart2 } from "react-icons/fi";
 import { RiDeleteBinLine } from "react-icons/ri";
 import {
   collection,
@@ -17,8 +16,9 @@ import {
 } from "firebase/firestore";
 import { db, storage } from "../../firebase";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { deleteObject, ref } from "firebase/storage";
+import { ModalContext } from "./CommentProvider";
 
 type Post = {
   id: string;
@@ -37,6 +37,7 @@ export default function Post({ post, id }: { post: Post; id: string }) {
   const { data: sessionData } = useSession();
   const [likes, setLikes] = useState<DocumentData[]>([]);
   const [hasLiked, setHasLiked] = useState(false);
+  const { postid, savePostId, toggleModal } = useContext(ModalContext);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -72,8 +73,13 @@ export default function Post({ post, id }: { post: Post; id: string }) {
     }
   };
 
+  const openCommentModal = (id: string) => {
+    toggleModal();
+    savePostId({ post, id });
+  };
+
   return (
-    <div className="flex px-4 py-2 gap-4 hover:bg-slate-400/20">
+    <div className="flex px-4 py-2 gap-4 hover:bg-slate-400/20 duration-300">
       <Image
         src={userImg}
         height={50}
@@ -108,7 +114,10 @@ export default function Post({ post, id }: { post: Post; id: string }) {
           </div>
         )}
         <div className="grid grid-cols-4 justify-center gap-5 items-center px-5">
-          <div className="mx-auto rounded-full hover:bg-slate-400/40 w-8 h-8 flex items-center justify-center">
+          <div
+            onClick={() => openCommentModal(id)}
+            className="mx-auto rounded-full hover:bg-slate-400/40 w-8 h-8 flex items-center justify-center"
+          >
             <HiOutlineChat size={20} />
           </div>
           <div className="mx-auto rounded-full hover:bg-slate-400/40 w-8 h-8 flex items-center justify-center">
