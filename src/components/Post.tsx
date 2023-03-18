@@ -73,7 +73,7 @@ export default function Post({ post, id }: { post: Post; id: string }) {
   };
 
   return (
-    <div className="flex px-4 py-2 gap-4 hover:bg-slate-400/10">
+    <div className="flex px-4 py-2 gap-4 hover:bg-slate-400/20">
       <Image
         src={userImg}
         height={50}
@@ -97,7 +97,7 @@ export default function Post({ post, id }: { post: Post; id: string }) {
         </div>
         <div>{content}</div>
         {image && (
-          <div className="flex w-full justify-center">
+          <div className="mt-3 flex w-full justify-center">
             <Image
               src={image}
               alt="Image"
@@ -107,22 +107,31 @@ export default function Post({ post, id }: { post: Post; id: string }) {
             />
           </div>
         )}
-        <div className="grid grid-cols-5 justify-center gap-5 items-center px-5">
-          <HiOutlineChat size={20} />
-          <AiOutlineRetweet size={20} />
-          <div className="flex gap-3 items-center">
+        <div className="grid grid-cols-4 justify-center gap-5 items-center px-5">
+          <div className="mx-auto rounded-full hover:bg-slate-400/40 w-8 h-8 flex items-center justify-center">
+            <HiOutlineChat size={20} />
+          </div>
+          <div className="mx-auto rounded-full hover:bg-slate-400/40 w-8 h-8 flex items-center justify-center">
+            <AiOutlineRetweet size={20} />
+          </div>
+          <div className="mx-auto flex gap-3 items-center">
             {hasLiked ? (
-              <AiTwotoneHeart color="red" onClick={likePost} size={20} />
+              <div className=" rounded-full hover:bg-slate-400/40 w-8 h-8 flex items-center justify-center">
+                <AiTwotoneHeart color="red" onClick={likePost} size={20} />
+              </div>
             ) : (
-              <AiOutlineHeart size={20} onClick={likePost} />
+              <div className=" rounded-full hover:bg-slate-400/40 w-8 h-8 flex items-center justify-center">
+                <AiOutlineHeart size={20} onClick={likePost} />
+              </div>
             )}
             <span className={hasLiked ? "text-red-700" : ""}>
               {likes.length}
             </span>
           </div>
-          <FiBarChart2 size={20} />
           {sessionData?.user.uid === post.id && (
-            <RiDeleteBinLine onClick={deletePost} size={20} />
+            <div className="mx-auto rounded-full hover:bg-slate-400/40 w-8 h-8 flex items-center justify-center">
+              <RiDeleteBinLine onClick={deletePost} size={20} />
+            </div>
           )}
         </div>
       </div>

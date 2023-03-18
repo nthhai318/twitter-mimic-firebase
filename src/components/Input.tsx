@@ -14,6 +14,7 @@ import {
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { createId } from "@paralleldrive/cuid2";
+import { motion } from "framer-motion";
 
 export default function Input({ sessionData }: { sessionData: Session }) {
   const [input, setInput] = useState<string>("");
@@ -60,7 +61,11 @@ export default function Input({ sessionData }: { sessionData: Session }) {
     };
   };
   return (
-    <div className="flex gap-4 p-4 divide-y-0 overflow-hidden ">
+    <motion.div
+      className="flex gap-4 p-4 divide-y-0 overflow-hidden "
+      initial={{ opacity: 0, y: -100 }}
+      whileInView={{ opacity: 1, y: 0 }}
+    >
       <Image
         src={sessionData.user?.image!}
         height={50}
@@ -135,6 +140,6 @@ export default function Input({ sessionData }: { sessionData: Session }) {
           </button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

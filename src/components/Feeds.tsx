@@ -10,6 +10,7 @@ import {
   query,
 } from "firebase/firestore";
 import { db } from "../../firebase";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function Feeds() {
   const [tweets, setTweets] = useState<DocumentData[]>([]);
@@ -52,14 +53,19 @@ export default function Feeds() {
         </div> */}
       </button>
       {sessionData && <Input sessionData={sessionData} />}
-      {/* {dunmmyData.map((post) => (
-        <Post key={post.id} post={post} />
-      ))} */}
-      {tweets.map((tweet) => (
-        <div key={tweet.id}>
-          <Post post={tweet.data()} id={tweet.id} />
-        </div>
-      ))}
+
+      <AnimatePresence mode="wait">
+        {tweets.map((tweet) => (
+          <motion.div
+            key={tweet.id}
+            initial={{ opacity: 0, y: 100 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, x: 100 }}
+          >
+            <Post post={tweet.data()} id={tweet.id} />
+          </motion.div>
+        ))}
+      </AnimatePresence>
     </div>
   );
 }

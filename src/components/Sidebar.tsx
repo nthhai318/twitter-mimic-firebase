@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { ReactComponentElement } from "react";
 import { IconType } from "react-icons";
 import {
   HiOutlineBell,
@@ -15,13 +14,18 @@ import {
 import { GiFeather } from "react-icons/gi";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 
 export default function Sidebar() {
   const { data: sessionData } = useSession();
   const router = useRouter();
   return (
     <div className="w-0 xl:ml-[100px] sm:w-[100px] lg:w-[300px] flex flex-col justify-between fixed h-full overflow-y-auto">
-      <div className="flex flex-col gap-7">
+      <motion.div
+        className="flex flex-col gap-7"
+        initial={{ opacity: 0, y: 100 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
         {/* Incorporation Logo */}
         <Image
           src="/random.svg"
@@ -60,7 +64,7 @@ export default function Sidebar() {
             <HiOutlineLogin size={"1em"} className="inline-block lg:hidden" />
           </button>
         )}
-      </div>
+      </motion.div>
 
       {/* User Profile */}
       <UserProfile />
@@ -70,19 +74,22 @@ export default function Sidebar() {
 
 function MenuItem({ Icon, menu }: { Icon: IconType; menu: string }) {
   return (
-    <div>
+    <motion.div>
       <div className="text-[1.5rem] h-[48px] flex items-center rounded-full p-1 hover:bg-slate-500/20 hover:duration-100 duration-75 ">
         <Icon size={"1em"} className="inline-block mx-2 mt-1" />
         <span className="hidden lg:inline-block capitalize pr-5">{menu}</span>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
 function UserProfile() {
   const { data: sessionData } = useSession();
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0, x: -100 }}
+      animate={{ opacity: 1, x: 0, transition: { delay: 0.3 } }}
+    >
       {sessionData && (
         <div className="flex rounded-full  p-2 pr-5 w-fit max-w-[210px] mx-auto justify-start items-center gap-2 hover:bg-slate-500/20 hover:duration-100 duration-75  mt-7 mb-5 overflow-hidden">
           <Image
@@ -100,6 +107,6 @@ function UserProfile() {
           </div>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 }

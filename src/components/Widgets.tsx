@@ -1,4 +1,5 @@
 import { New, fetchNews, getNews } from "@/utils/getNews";
+import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
 import { FiSearch } from "react-icons/fi";
@@ -25,19 +26,24 @@ export default function Widgets({ news }: { news: New[] }) {
           Trending News
         </p>
         <div className="flex flex-col gap-0">
-          {displayNew.map((article) => (
-            <div
-              className="py-2 px-3 group hover:bg-slate-500/10"
-              key={article.link}
-            >
-              <Link className=" flex flex-col gap-0" href={article.link}>
-                <p className="font-semibold group-hover:underline">
-                  {article.title}
-                </p>
-                <p className="italic ">{article.source_id}</p>
-              </Link>
-            </div>
-          ))}
+          <AnimatePresence mode="wait">
+            {displayNew.map((article, idx) => (
+              <motion.div
+                initial={{ opacity: 0, x: 100 }}
+                animate={{ opacity: 1, x: 0, transition: { delay: 0.2 * idx } }}
+                exit={{ opacity: 0, x: 100 }}
+                className="py-2 px-3 group hover:bg-slate-500/10"
+                key={article.link}
+              >
+                <Link className=" flex flex-col gap-0" href={article.link}>
+                  <p className="font-semibold group-hover:underline">
+                    {article.title}
+                  </p>
+                  <p className="italic ">{article.source_id}</p>
+                </Link>
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
         {numOfNews < news.length && (
           <button
