@@ -85,20 +85,21 @@ export default function Input({ sessionData }: { sessionData: Session }) {
           />
         </div>
         {tweetImg && (
-          <div className="flex flex-col w-full justify-center">
-            <div className="relative w-fit mx-auto">
+          <div className="group flex flex-col w-full justify-center">
+            <div className="relative w-fit mx-auto pointer-events-none hover:brightness-75">
               <Image
                 src={tweetImg}
                 alt="Image"
                 width={1000}
                 height={1000}
-                className="max-w-full w-auto h-auto max-h-[400px] rounded-lg object-contain"
+                className="max-w-full w-auto h-auto max-h-[400px] rounded-lg object-contain pointer-events-none"
               />
-              <AiOutlineCloseCircle
-                size={20}
-                className="absolute top-2 right-2"
+              <button
+                className="absolute top-2 right-2 bg-slate-600/50 text-white rounded-full pointer-events-auto p-1 hover:brightness-200 z-50"
                 onClick={() => setTweetImg(null)}
-              />
+              >
+                <AiOutlineCloseCircle size={20} />
+              </button>
             </div>
             <div>
               <p className="text-center">Image attached to tweet</p>
@@ -107,7 +108,10 @@ export default function Input({ sessionData }: { sessionData: Session }) {
         )}
         <div className="flex justify-between items-center p-2">
           <div className="flex gap-5 p-2">
-            <div className="p-1" onClick={() => imgFile.current?.click()}>
+            <div
+              className="p-2 hover:hover:bg-slate-400/30 rounded-full"
+              onClick={() => imgFile.current?.click()}
+            >
               <IoImageOutline size={25} />
               <input
                 type="file"
@@ -117,7 +121,7 @@ export default function Input({ sessionData }: { sessionData: Session }) {
                 onChange={addImagetoTweet}
               />
             </div>
-            <div className="p-1">
+            <div className="p-2 hover:hover:bg-slate-400/30 rounded-full">
               <HiOutlineFaceSmile size={25} />
             </div>
           </div>
