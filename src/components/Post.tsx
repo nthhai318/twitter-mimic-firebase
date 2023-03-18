@@ -66,7 +66,9 @@ export default function Post({ post, id }: { post: Post; id: string }) {
   const deletePost = async () => {
     if (window.confirm("Are you sure you want to delete this tweet?")) {
       deleteDoc(doc(db, "tweets", id));
-      deleteObject(ref(storage, `tweets/${id}/img`));
+      if (post.image) {
+        deleteObject(ref(storage, `tweets/${id}/img`));
+      }
     }
   };
 
