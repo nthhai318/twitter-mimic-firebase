@@ -42,21 +42,22 @@ export default function Sidebar() {
             <MenuItem menu="home" Icon={HiOutlineHome} />
           </Link>
 
-          <MenuItem menu="explore" Icon={HiOutlineHashtag} />
-          {/* <MenuItem menu="notifications" Icon={HiOutlineBell} />
+          {/* <MenuItem menu="explore" Icon={HiOutlineHashtag} />
+          <MenuItem menu="notifications" Icon={HiOutlineBell} />
           <MenuItem menu="messages" Icon={HiOutlineMail} />
           <MenuItem menu="bookmarks" Icon={HiOutlineBookmark} />
           <MenuItem menu="list" Icon={HiOutlineClipboardList} />
           <MenuItem menu="profile" Icon={HiOutlineUser} />
           <MenuItem menu="more" Icon={HiOutlineDotsCircleHorizontal} /> */}
         </div>
-        {sessionData ? (
-          // Tweet button
-          <button className="rounded-full h-16 sm:w-16 lg:w-[150px] text-white text-[1.5rem] font-semibold bg-[rgb(29,155,240)] flex items-center justify-center mx-auto">
-            <span className="lg:inline-block hidden">Tweet</span>
-            <GiFeather size={"1em"} className="inline-block lg:hidden" />
-          </button>
-        ) : (
+        {!sessionData && (
+          //  (
+          //   // Tweet button
+          //   // <button className="rounded-full h-16 sm:w-16 lg:w-[150px] text-white text-[1.5rem] font-semibold bg-[rgb(29,155,240)] flex items-center justify-center mx-auto">
+          //   //   <span className="lg:inline-block hidden">Tweet</span>
+          //   //   <GiFeather size={"1em"} className="inline-block lg:hidden" />
+          //   // </button>
+          // ) : (
           //Login button
           <button
             className="rounded-full h-16 sm:w-16 lg:w-[150px] text-white text-[1.5rem] font-semibold bg-[rgb(29,155,240)] flex items-center justify-center mx-auto"

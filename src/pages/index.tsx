@@ -3,7 +3,6 @@ import { Inter } from "next/font/google";
 import Feeds from "@/components/Feeds";
 import { fetchNews, getNews } from "@/utils/getNews";
 import Widgets from "@/components/Widgets";
-import Sidebar from "@/components/Sidebar";
 import CommentModal from "@/components/CommentModal";
 
 const inter = Inter({ subsets: ["latin"] });

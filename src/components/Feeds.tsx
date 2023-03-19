@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import {
   DocumentData,
   collection,
+  limit,
   onSnapshot,
   orderBy,
   query,
@@ -15,15 +16,22 @@ import { AnimatePresence, motion } from "framer-motion";
 export default function Feeds() {
   const [tweets, setTweets] = useState<DocumentData[]>([]);
   const { data: sessionData } = useSession();
+  const [numberofTweets, setNumberofTweets] = useState<number>(5);
+
+  useEffect(() => {});
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
-      query(collection(db, "tweets"), orderBy("timestamp", "desc")),
+      query(
+        collection(db, "tweets"),
+        orderBy("timestamp", "desc"),
+        limit(numberofTweets)
+      ),
       (snapshot) => {
         setTweets(snapshot.docs);
       }
     );
-  }, []);
+  }, [numberofTweets]);
 
   return (
     <div className=" sm:ml-[100px] lg:ml-[300px] min-w-[300px] relative flex-1 max-w-[800px] divide-[rgb(239,243,244)] divide-y  border-r border-l border-[rgb(239,243,244)] xl:ml-[400px]">
@@ -70,6 +78,14 @@ export default function Feeds() {
             )
         )}
       </AnimatePresence>
+      <div className="w-full flex justify-center hover:bg-slate-400/20 duration-300">
+        <button
+          className="mb-10 mx-auto "
+          onClick={() => setNumberofTweets((num) => num + 5)}
+        >
+          Show more
+        </button>
+      </div>
     </div>
   );
 }

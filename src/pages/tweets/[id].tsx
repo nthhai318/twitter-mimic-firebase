@@ -75,28 +75,30 @@ export default function Tweet() {
               <Post post={tweet.data()} id={tweet.id} />
             </div>
           )}
-          {tweet &&
-            comments &&
-            comments.map((comment) => (
-              <div key={comment.id}>
-                <p>
-                  Reply to{" "}
-                  <Link
-                    href="#original-tweet"
-                    className="underline text-blue-800"
-                  >
-                    {tweet.data().user}&apos;s tweet
-                  </Link>
-                </p>
-                {typeof id === "string" && comment.data() && (
-                  <Comment
-                    post={comment.data()}
-                    tweetid={id}
-                    cmtid={comment.id}
-                  />
-                )}
-              </div>
-            ))}
+          <div className="ml-5">
+            {tweet &&
+              comments &&
+              comments.map((comment) => (
+                <div key={comment.id}>
+                  <p>
+                    Reply to{" "}
+                    <Link
+                      href="#original-tweet"
+                      className="underline text-blue-800"
+                    >
+                      {tweet.data().user}&apos;s tweet
+                    </Link>
+                  </p>
+                  {typeof id === "string" && comment.data() && (
+                    <Comment
+                      post={comment.data()}
+                      tweetid={id}
+                      cmtid={comment.id}
+                    />
+                  )}
+                </div>
+              ))}
+          </div>
         </div>
 
         <CommentModal />

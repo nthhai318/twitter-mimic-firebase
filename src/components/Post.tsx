@@ -169,24 +169,55 @@ export default function Post({ post, id }: { post: Post; id: string }) {
         >
           <div className="mx-auto flex gap-3 items-center">
             <div
-              onClick={() => openCommentModal(id)}
+              onClick={() => {
+                if (sessionData) {
+                  openCommentModal(id);
+                } else {
+                  if (window.confirm("You need to sign in to comment post!")) {
+                    router.push("/auth/signin");
+                  }
+                }
+              }}
               className="mx-auto rounded-full hover:bg-slate-400/40 w-8 h-8 flex items-center justify-center"
             >
               <HiOutlineChat size={20} />
             </div>
             <span className="">{comments.length}</span>
           </div>
-          <div className="mx-auto rounded-full hover:bg-slate-400/40 w-8 h-8 flex items-center justify-center">
+          {/* <div className="mx-auto rounded-full hover:bg-slate-400/40 w-8 h-8 flex items-center justify-center">
             <AiOutlineRetweet size={20} />
-          </div>
+          </div> */}
           <div className="mx-auto flex gap-3 items-center">
             {hasLiked ? (
               <div className=" rounded-full hover:bg-slate-400/40 w-8 h-8 flex items-center justify-center">
-                <AiTwotoneHeart color="red" onClick={likePost} size={20} />
+                <AiTwotoneHeart
+                  color="red"
+                  onClick={() => {
+                    if (sessionData) {
+                      likePost();
+                    } else {
+                      if (window.confirm("You need to sign in to like post!")) {
+                        router.push("/auth/signin");
+                      }
+                    }
+                  }}
+                  size={20}
+                />
               </div>
             ) : (
               <div className=" rounded-full hover:bg-slate-400/40 w-8 h-8 flex items-center justify-center">
-                <AiOutlineHeart size={20} onClick={likePost} />
+                <AiOutlineHeart
+                  size={20}
+                  onClick={() => {
+                    if (sessionData) {
+                      likePost();
+                    } else {
+                      if (window.confirm("You need to sign in to like post!")) {
+                        router.push("/auth/signin");
+                      }
+                    }
+                  }}
+                />
               </div>
             )}
             <span className={hasLiked ? "text-red-700" : ""}>
