@@ -62,8 +62,6 @@ export default function Post({ post, id }: { post: Post; id: string }) {
     );
   }, [likes, sessionData?.user.uid]);
 
-  useEffect(() => {}, [id]);
-
   const likePost = async () => {
     if (hasLiked) {
       await deleteDoc(doc(db, "tweets", id, "likes", sessionData?.user.uid!));

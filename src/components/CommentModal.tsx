@@ -36,10 +36,12 @@ export default function CommentModal() {
 
   const sendComment = async () => {
     await addDoc(collection(db, "tweets", targetedPost.id, "comments"), {
-      comment: comment,
-      user: sessionData?.user.name,
-      userImg: sessionData?.user.image,
+      id: sessionData!.user.uid,
+      user: sessionData!.user.name,
+      email: sessionData!.user.email,
+      content: comment,
       timestamp: serverTimestamp(),
+      userImg: sessionData!.user?.image,
     });
 
     toggleModal();

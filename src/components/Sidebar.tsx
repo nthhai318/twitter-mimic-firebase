@@ -15,6 +15,7 @@ import { GiFeather } from "react-icons/gi";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 export default function Sidebar() {
   const { data: sessionData } = useSession();
@@ -37,14 +38,17 @@ export default function Sidebar() {
 
         {/* SidebarMenu Items */}
         <div className=" flex flex-col gap-1 w-fit mx-auto">
-          <MenuItem menu="home" Icon={HiOutlineHome} />
+          <Link href="/">
+            <MenuItem menu="home" Icon={HiOutlineHome} />
+          </Link>
+
           <MenuItem menu="explore" Icon={HiOutlineHashtag} />
-          <MenuItem menu="notifications" Icon={HiOutlineBell} />
+          {/* <MenuItem menu="notifications" Icon={HiOutlineBell} />
           <MenuItem menu="messages" Icon={HiOutlineMail} />
           <MenuItem menu="bookmarks" Icon={HiOutlineBookmark} />
           <MenuItem menu="list" Icon={HiOutlineClipboardList} />
           <MenuItem menu="profile" Icon={HiOutlineUser} />
-          <MenuItem menu="more" Icon={HiOutlineDotsCircleHorizontal} />
+          <MenuItem menu="more" Icon={HiOutlineDotsCircleHorizontal} /> */}
         </div>
         {sessionData ? (
           // Tweet button
