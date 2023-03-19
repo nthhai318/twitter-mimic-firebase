@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useRef, useState } from "react";
 import { ModalContext } from "./CommentProvider";
 import { AnimatePresence, MotionConfig, motion } from "framer-motion";
 import { useSession } from "next-auth/react";
@@ -26,11 +26,29 @@ export default function CommentModal() {
   const { modal, toggleModal, postid, savePostId } = useContext(ModalContext);
   const { data: sessionData } = useSession();
   const targetedPost = postid as TargetedPost;
+  const [comment, setComment] = useState<string>("");
+  const [repImg, setRepImg] = useState<string | null>(null);
+  const cmtFile = useRef<HTMLInputElement>(null);
+
+  const addImagetoReply = (e: any) => {
+    const reader = new FileReader();
+    if (e.target.files[0]) {
+      reader.readAsDataURL(e.target.files[0]);
+    }
+    reader.onload = (readerEvent) => {
+      setRepImg(() =>
+        typeof readerEvent.target?.result == "string"
+          ? readerEvent.target?.result
+          : null
+      );
+    };
+  };
+
   return (
     <AnimatePresence>
       {modal && (
         <motion.div
-          className="fixed flex items-center justify-center w-full h-full bg-slate-700/40"
+          className="fixed flex  justify-center w-full h-full bg-slate-700/40"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -38,10 +56,10 @@ export default function CommentModal() {
         >
           <motion.div
             initial={{ opacity: 0, y: -300 }}
-            animate={{ opacity: 1, y: -200 }}
+            animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -250 }}
-            className="w-[40vw] translate-y-[-200px] min-w-[340px]  bg-white rounded-xl p-5"
-            onClick={(e) => {}}
+            className="w-[40vw] min-w-[340px] h-fit max-h-full overflow-auto rounded-xl p-5 bg-white"
+            onClick={(e) => e.stopPropagation()}
           >
             {/* <p>{JSON.stringify(postid)}</p> */}
             <div className="flex gap-5 ">
@@ -58,77 +76,92 @@ export default function CommentModal() {
               </div>
             </div>
             <div className="mt-10 mx-auto w-fit">
-              <p className="">
+              <p className="underline text-[0.9rem]">
                 Reply to{" "}
                 <span className="font-bold">{targetedPost.post.user}</span>
               </p>
             </div>
-            <div className="mt-5 flex gap-5 ">
-              <Image
-                src={sessionData?.user.image!}
-                width={50}
-                height={50}
-                alt={sessionData?.user.name!}
-                className="rounded-full w-[50px] h-[50px]"
-              />
-            </div>
-            <div>
+            <div className="mt-5 flex gap-5 bg-white rounded-xl m-[-10px] p-[10px]">
+              <div>
+                <Image
+                  src={sessionData?.user.image!}
+                  width={50}
+                  height={50}
+                  alt={sessionData?.user.name!}
+                  className="rounded-full w-[50px] h-[50px]"
+                />
+              </div>
+
               <div className="flex-1 flex flex-col divide-y">
                 <div className="">
                   <p className="font-bold">{sessionData?.user?.name}</p>
                 </div>
-                <div className="py-3">
+                <div className="pt-3 w-full">
                   <textarea
-                    className="w-full outline-none p-1 divide-y resize-none"
-                    placeholder="What's happening?"
-                    rows={1}
+                    className="w-full outline-none p-1 divide-y resize-none text-[1.5rem]"
+                    placeholder="Tweet your reply"
+                    rows={3}
+                    value={comment}
                     onChange={(e) => {
+                      setComment(e.target.value);
                       e.target.style.height = "0";
-                      e.target.style.height = `${e.target.scrollHeight}px`;
+                      e.target.style.height = `${Math.max(
+                        e.target.scrollHeight,
+                        116
+                      )}px`;
                     }}
                   />
-                  <div className="flex justify-between items-center p-2">
-                    <div className="flex gap-5 p-2">
-                      <div className="p-2 hover:hover:bg-slate-400/30 rounded-full">
-                        <IoImageOutline size={25} />
-                        <input
-                          type="file"
-                          hidden
-                          accept="image/png, image/gif, image/jpeg, image/webp"
-                        />
-                      </div>
-                      <div className="p-2 hover:hover:bg-slate-400/30 rounded-full">
-                        <HiOutlineFaceSmile size={25} />
-                      </div>
-                    </div>
-                    <button className="rounded-full bg-[rgb(29,155,240)] font-semibold px-4 py-2 text-white disabled:opacity-50">
-                      Tweet
-                    </button>
-                  </div>
                 </div>
 
-                {/* {tweetImg && (
-          <div className="group flex flex-col w-full justify-center">
-            <div className="relative w-fit mx-auto pointer-events-none hover:brightness-75">
-              <Image
-                src={tweetImg}
-                alt="Image"
-                width={1000}
-                height={1000}
-                className="max-w-full w-auto h-auto max-h-[400px] rounded-lg object-contain pointer-events-none"
-              />
-              <button
-                className="absolute top-2 right-2 bg-slate-600/50 text-white rounded-full pointer-events-auto p-1 hover:brightness-200 z-50"
-                onClick={() => setTweetImg(null)}
-              >
-                <AiOutlineCloseCircle size={20} />
-              </button>
-            </div>
-            <div>
-              <p className="text-center">Image attached to tweet</p>
-            </div>
-          </div>
-        )} */}
+                {repImg && (
+                  <div className="group flex flex-col w-full justify-center">
+                    <div className="relative w-fit mx-auto pointer-events-none hover:brightness-75">
+                      <Image
+                        src={repImg}
+                        alt="Image"
+                        width={1000}
+                        height={1000}
+                        className="max-w-full w-auto h-auto max-h-[300px] rounded-lg object-contain pointer-events-none"
+                      />
+                      <button
+                        className="absolute top-2 right-2 bg-slate-600/50 text-white rounded-full pointer-events-auto p-1 hover:brightness-200 z-50"
+                        onClick={() => setRepImg(null)}
+                      >
+                        <AiOutlineCloseCircle size={20} />
+                      </button>
+                    </div>
+                    <div>
+                      <p className="text-center">Image attached to tweet</p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex justify-between items-center pt-2">
+                  <div className="flex gap-5 pt-2">
+                    <div
+                      className="p-2 hover:hover:bg-slate-400/30 rounded-full"
+                      onClick={() => cmtFile.current?.click()}
+                    >
+                      <IoImageOutline size={25} />
+                      <input
+                        type="file"
+                        hidden
+                        accept="image/png, image/gif, image/jpeg, image/webp"
+                        ref={cmtFile}
+                        onChange={addImagetoReply}
+                      />
+                    </div>
+                    <div className="p-2 hover:hover:bg-slate-400/30 rounded-full">
+                      <HiOutlineFaceSmile size={25} />
+                    </div>
+                  </div>
+                  <button
+                    disabled={comment ? false : true}
+                    className="rounded-full bg-[rgb(29,155,240)] font-semibold px-4 py-2 text-white disabled:opacity-50"
+                  >
+                    Tweet
+                  </button>
+                </div>
               </div>
             </div>
           </motion.div>

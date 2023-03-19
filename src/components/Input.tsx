@@ -13,7 +13,6 @@ import {
 } from "firebase/firestore";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 import { AiOutlineCloseCircle } from "react-icons/ai";
-import { createId } from "@paralleldrive/cuid2";
 import { motion } from "framer-motion";
 
 export default function Input({ sessionData }: { sessionData: Session }) {
