@@ -6,9 +6,16 @@ import Image from "next/image";
 import { IoImageOutline } from "react-icons/io5";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { HiOutlineFaceSmile } from "react-icons/hi2";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import { db } from "../../firebase";
+import {
+  addDoc,
+  collection,
+  doc,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
+import { db, storage } from "../../firebase";
 import { useRouter } from "next/router";
+import { ref, uploadString, getDownloadURL } from "firebase/storage";
 
 type TargetedPost = {
   post: {
@@ -35,14 +42,34 @@ export default function CommentModal() {
   const router = useRouter();
 
   const sendComment = async () => {
-    await addDoc(collection(db, "tweets", targetedPost.id, "comments"), {
-      id: sessionData!.user.uid,
-      user: sessionData!.user.name,
-      email: sessionData!.user.email,
-      content: comment,
-      timestamp: serverTimestamp(),
-      userImg: sessionData!.user?.image,
-    });
+    const cmtRef = await addDoc(
+      collection(db, "tweets", targetedPost.id, "comments"),
+      {
+        id: sessionData!.user.uid,
+        user: sessionData!.user.name,
+        email: sessionData!.user.email,
+        content: comment,
+        timestamp: serverTimestamp(),
+        userImg: sessionData!.user?.image,
+      }
+    );
+
+    const imgRef = ref(
+      storage,
+      `tweets/${targetedPost.id}/comments/${cmtRef.id}/img`
+    );
+
+    if (repImg) {
+      await uploadString(imgRef, repImg, "data_url").then(async () => {
+        const downloadUrl = await getDownloadURL(imgRef);
+        await updateDoc(
+          doc(db, "tweets", targetedPost.id, "comments", cmtRef.id),
+          {
+            image: downloadUrl,
+          }
+        );
+      });
+    }
 
     toggleModal();
     setComment("");

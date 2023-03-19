@@ -18,7 +18,6 @@ export default function Home({ newsResult }: { newsResult: fetchNews }) {
         <meta name="description" content="Something resembles twitter?" />
       </Head>
       <main className="flex w-full mx-auto">
-        <Sidebar />
         <Feeds />
         <Widgets news={news} />
         <CommentModal />

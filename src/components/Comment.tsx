@@ -16,10 +16,8 @@ import {
 } from "firebase/firestore";
 import { db, storage } from "../../firebase";
 import { useSession } from "next-auth/react";
-import { useContext, useEffect, useState } from "react";
-import { deleteObject, ref, listAll } from "firebase/storage";
-import { ModalContext } from "./CommentProvider";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { deleteObject, ref } from "firebase/storage";
 
 type Post = {
   id: string;
@@ -33,28 +31,27 @@ type Post = {
   };
 };
 
-export default function Post({ post, id }: { post: Post; id: string }) {
-  const router = useRouter();
+export default function Comment({
+  post,
+  tweetid,
+  cmtid,
+}: {
+  post: Post;
+  tweetid: string;
+  cmtid: string;
+}) {
   const { user, userImg, image, content, timestamp } = post;
   const { data: sessionData } = useSession();
   const [likes, setLikes] = useState<DocumentData[]>([]);
-  const [comments, setComments] = useState<DocumentData[]>([]);
+
   const [hasLiked, setHasLiked] = useState(false);
-  const { postid, savePostId, toggleModal } = useContext(ModalContext);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
-      collection(db, "tweets", id, "comments"),
-      (snapshot) => setComments(snapshot.docs)
-    );
-  }, [id]);
-
-  useEffect(() => {
-    const unsubscribe = onSnapshot(
-      collection(db, "tweets", id, "likes"),
+      collection(db, "tweets", tweetid, "comments", cmtid, "likes"),
       (snapshot) => setLikes(snapshot.docs)
     );
-  }, [id]);
+  }, [cmtid, tweetid]);
 
   useEffect(() => {
     setHasLiked(
@@ -66,61 +63,46 @@ export default function Post({ post, id }: { post: Post; id: string }) {
 
   const likePost = async () => {
     if (hasLiked) {
-      await deleteDoc(doc(db, "tweets", id, "likes", sessionData?.user.uid!));
+      await deleteDoc(
+        doc(
+          db,
+          "tweets",
+          tweetid,
+          "comments",
+          cmtid,
+          "likes",
+          sessionData?.user.uid!
+        )
+      );
     } else {
-      await setDoc(doc(db, "tweets", id, "likes", sessionData?.user.uid!), {
-        username: sessionData?.user.name,
-      });
+      await setDoc(
+        doc(
+          db,
+          "tweets",
+          tweetid,
+          "comments",
+          cmtid,
+          "likes",
+          sessionData?.user.uid!
+        ),
+        {
+          username: sessionData?.user.name,
+        }
+      );
     }
   };
 
-  const deletePost = async () => {
-    if (
-      window.confirm(
-        "Are you sure you want to delete this tweet? It will delete all other reply to this tweet!"
-      )
-    ) {
+  const deleteComment = async () => {
+    if (window.confirm("Are you sure you want to delete this tweet?")) {
+      deleteDoc(doc(db, "tweets", tweetid, "comments", cmtid));
       if (post.image) {
-        deleteObject(ref(storage, `tweets/${id}/img`));
+        deleteObject(ref(storage, `tweets/${tweetid}/comments/${cmtid}/img`));
       }
-
-      if (comments) {
-        comments.forEach((comment) => {
-          if (comment.data().image) {
-            deleteObject(
-              ref(storage, `tweets/${id}/comments/${comment.id}/img`)
-            );
-          }
-          deleteDoc(doc(db, "tweets", id, "comments", comment.id));
-          if (likes) {
-          }
-        });
-      }
-      if (likes) {
-        likes.forEach(async (like) => {
-          deleteDoc(doc(db, "tweets", id, "likes", like.id));
-        });
-      }
-      if (post.image) {
-        deleteObject(ref(storage, `tweets/${id}/img`));
-      }
-      await deleteDoc(doc(db, "tweets", id));
-      router.push("/");
     }
-  };
-
-  const openCommentModal = (id: string) => {
-    toggleModal();
-    savePostId({ post, id });
   };
 
   return (
-    <div
-      onClick={() => {
-        router.push(`/tweets/${id}`);
-      }}
-      className="flex px-4 py-2 gap-4 hover:bg-slate-400/20 duration-300"
-    >
+    <div className="flex px-4 py-2 gap-4 hover:bg-slate-400/20 duration-300">
       <div>
         <Image
           src={userImg}
@@ -167,22 +149,7 @@ export default function Post({ post, id }: { post: Post; id: string }) {
 
         {/* Utility rows: comments - likes - deletes tweet */}
 
-        <div
-          className="grid grid-cols-4 justify-center gap-5 items-center px-5"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <div className="mx-auto flex gap-3 items-center">
-            <div
-              onClick={() => openCommentModal(id)}
-              className="mx-auto rounded-full hover:bg-slate-400/40 w-8 h-8 flex items-center justify-center"
-            >
-              <HiOutlineChat size={20} />
-            </div>
-            <span className="">{comments.length}</span>
-          </div>
-          <div className="mx-auto rounded-full hover:bg-slate-400/40 w-8 h-8 flex items-center justify-center">
-            <AiOutlineRetweet size={20} />
-          </div>
+        <div className="grid grid-cols-4 justify-center gap-5 items-center px-5">
           <div className="mx-auto flex gap-3 items-center">
             {hasLiked ? (
               <div className=" rounded-full hover:bg-slate-400/40 w-8 h-8 flex items-center justify-center">
@@ -199,7 +166,7 @@ export default function Post({ post, id }: { post: Post; id: string }) {
           </div>
           {sessionData?.user.uid === post.id && (
             <div className="mx-auto rounded-full hover:bg-slate-400/40 w-8 h-8 flex items-center justify-center">
-              <RiDeleteBinLine onClick={deletePost} size={20} />
+              <RiDeleteBinLine onClick={deleteComment} size={20} />
             </div>
           )}
         </div>

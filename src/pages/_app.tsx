@@ -3,6 +3,7 @@ import type { AppProps } from "next/app";
 import { SessionProvider } from "next-auth/react";
 import { useState } from "react";
 import { ModalContext } from "@/components/CommentProvider";
+import Sidebar from "@/components/Sidebar";
 
 export default function App({
   Component,
@@ -16,6 +17,7 @@ export default function App({
     <div className="flex">
       <ModalContext.Provider value={{ modal, toggleModal, postid, savePostId }}>
         <SessionProvider session={session}>
+          <Sidebar />
           <Component {...pageProps} />
         </SessionProvider>
       </ModalContext.Provider>

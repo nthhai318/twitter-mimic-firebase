@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { db } from "../../../firebase";
 import Post from "@/components/Post";
 import Link from "next/link";
+import Comment from "@/components/Comment";
 
 export default function Tweet() {
   const router = useRouter();
@@ -41,8 +42,6 @@ export default function Tweet() {
   return (
     <>
       <main className="flex w-full mx-auto">
-        <Sidebar />
-
         {/* Feeds but only tweets */}
         <div
           role="Feed"
@@ -78,7 +77,13 @@ export default function Tweet() {
                     {tweet.data().user}&apos;s tweet
                   </Link>
                 </p>
-                <Post post={comment.data()} id={comment.id} />
+                {typeof id === "string" && (
+                  <Comment
+                    post={comment.data()}
+                    tweetid={id}
+                    cmtid={comment.id}
+                  />
+                )}
               </div>
             ))}
         </div>
