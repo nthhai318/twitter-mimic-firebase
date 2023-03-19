@@ -55,16 +55,20 @@ export default function Feeds() {
       {sessionData && <Input sessionData={sessionData} />}
 
       <AnimatePresence>
-        {tweets.map((tweet) => (
-          <motion.div
-            key={tweet.id}
-            initial={{ opacity: 0, y: 100 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, x: 100 }}
-          >
-            <Post post={tweet.data()} id={tweet.id} />
-          </motion.div>
-        ))}
+        {tweets.map(
+          (tweet) =>
+            tweet &&
+            tweet.data() && (
+              <motion.div
+                key={tweet.id}
+                initial={{ opacity: 0, y: 100 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, x: 100 }}
+              >
+                <Post post={tweet.data()} id={tweet.id} />
+              </motion.div>
+            )
+        )}
       </AnimatePresence>
     </div>
   );

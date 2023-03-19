@@ -1,5 +1,4 @@
 import CommentModal from "@/components/CommentModal";
-import Sidebar from "@/components/Sidebar";
 import {
   onSnapshot,
   query,
@@ -59,7 +58,19 @@ export default function Tweet() {
               <p className="font-bold ">Original tweet</p>
             </div>
           </button>
-          {tweet && (
+          {(!tweet || !tweet.data()) && (
+            <div>
+              {" "}
+              No tweet was found! return{" "}
+              <Link
+                className="font-bold underline text-blue-800 text-[1.5rem]"
+                href="/"
+              >
+                Home?
+              </Link>
+            </div>
+          )}
+          {tweet && tweet.data() && (
             <div id="original-tweet" className="scroll-py-14">
               <Post post={tweet.data()} id={tweet.id} />
             </div>
@@ -77,7 +88,7 @@ export default function Tweet() {
                     {tweet.data().user}&apos;s tweet
                   </Link>
                 </p>
-                {typeof id === "string" && (
+                {typeof id === "string" && comment.data() && (
                   <Comment
                     post={comment.data()}
                     tweetid={id}

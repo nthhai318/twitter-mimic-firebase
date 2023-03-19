@@ -19,7 +19,7 @@ import { useSession } from "next-auth/react";
 import { useContext, useEffect, useState } from "react";
 import { deleteObject, ref, listAll } from "firebase/storage";
 import { ModalContext } from "./CommentProvider";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 
 type Post = {
   id: string;
@@ -101,11 +101,7 @@ export default function Post({ post, id }: { post: Post; id: string }) {
           deleteDoc(doc(db, "tweets", id, "likes", like.id));
         });
       }
-      if (post.image) {
-        deleteObject(ref(storage, `tweets/${id}/img`));
-      }
-      await deleteDoc(doc(db, "tweets", id));
-      router.push("/");
+      deleteDoc(doc(db, "tweets", id));
     }
   };
 
