@@ -1,4 +1,4 @@
-# Live demo of this site: [**Twitter-mimic**](twitter-mimic-firebase.vercel.app)
+# Live demo of this site: [**Twitter-mimic**](https://twitter-mimic-firebase.vercel.app)
 
 ## Learn More
 
