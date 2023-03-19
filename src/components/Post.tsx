@@ -36,8 +36,16 @@ export default function Post({ post, id }: { post: Post; id: string }) {
   const { user, userImg, image, content, timestamp } = post;
   const { data: sessionData } = useSession();
   const [likes, setLikes] = useState<DocumentData[]>([]);
+  const [comments, setComments] = useState<DocumentData[]>([]);
   const [hasLiked, setHasLiked] = useState(false);
   const { postid, savePostId, toggleModal } = useContext(ModalContext);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      collection(db, "tweets", id, "comments"),
+      (snapshot) => setComments(snapshot.docs)
+    );
+  }, [id]);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -53,6 +61,8 @@ export default function Post({ post, id }: { post: Post; id: string }) {
         : false
     );
   }, [likes, sessionData?.user.uid]);
+
+  useEffect(() => {}, [id]);
 
   const likePost = async () => {
     if (hasLiked) {
@@ -80,13 +90,18 @@ export default function Post({ post, id }: { post: Post; id: string }) {
 
   return (
     <div className="flex px-4 py-2 gap-4 hover:bg-slate-400/20 duration-300">
-      <Image
-        src={userImg}
-        height={50}
-        width={50}
-        alt={`${user} ava`}
-        className="mt-2 rounded-full w-[50px] h-[50px] object-cover"
-      />
+      <div>
+        <Image
+          src={userImg}
+          height={50}
+          width={50}
+          alt={`${user} ava`}
+          className="mt-2 rounded-full w-[50px] h-[50px] object-cover"
+        />
+      </div>
+
+      {/* Show tweets text content */}
+
       <div className="flex flex-1 flex-col gap-3 mb-5 overflow-hidden">
         <div className="flex justify-between items-center ">
           <div className="flex gap-[1ch] justify-start items-center flex-shrink">
@@ -102,6 +117,9 @@ export default function Post({ post, id }: { post: Post; id: string }) {
           </div>
         </div>
         <div>{content}</div>
+
+        {/* Show tweet-image if any */}
+
         {image && (
           <div className="mt-3 flex w-full justify-center">
             <Image
@@ -113,12 +131,18 @@ export default function Post({ post, id }: { post: Post; id: string }) {
             />
           </div>
         )}
+
+        {/* Utility rows: comments - likes - deletes tweet */}
+
         <div className="grid grid-cols-4 justify-center gap-5 items-center px-5">
-          <div
-            onClick={() => openCommentModal(id)}
-            className="mx-auto rounded-full hover:bg-slate-400/40 w-8 h-8 flex items-center justify-center"
-          >
-            <HiOutlineChat size={20} />
+          <div className="mx-auto flex gap-3 items-center">
+            <div
+              onClick={() => openCommentModal(id)}
+              className="mx-auto rounded-full hover:bg-slate-400/40 w-8 h-8 flex items-center justify-center"
+            >
+              <HiOutlineChat size={20} />
+            </div>
+            <span className="">{comments.length}</span>
           </div>
           <div className="mx-auto rounded-full hover:bg-slate-400/40 w-8 h-8 flex items-center justify-center">
             <AiOutlineRetweet size={20} />

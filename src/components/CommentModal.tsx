@@ -1,11 +1,14 @@
 import { useContext, useRef, useState } from "react";
 import { ModalContext } from "./CommentProvider";
-import { AnimatePresence, MotionConfig, motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { IoImageOutline } from "react-icons/io5";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { HiOutlineFaceSmile } from "react-icons/hi2";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { db } from "../../firebase";
+import { useRouter } from "next/router";
 
 type TargetedPost = {
   post: {
@@ -29,6 +32,21 @@ export default function CommentModal() {
   const [comment, setComment] = useState<string>("");
   const [repImg, setRepImg] = useState<string | null>(null);
   const cmtFile = useRef<HTMLInputElement>(null);
+  const router = useRouter();
+
+  const sendComment = async () => {
+    await addDoc(collection(db, "tweets", targetedPost.id, "comments"), {
+      comment: comment,
+      user: sessionData?.user.name,
+      userImg: sessionData?.user.image,
+      timestamp: serverTimestamp(),
+    });
+
+    toggleModal();
+    setComment("");
+    setRepImg(null);
+    router.push(`/tweets/${targetedPost.id}`);
+  };
 
   const addImagetoReply = (e: any) => {
     const reader = new FileReader();
@@ -63,25 +81,22 @@ export default function CommentModal() {
           >
             {/* <p>{JSON.stringify(postid)}</p> */}
             <div className="flex gap-5 ">
-              <Image
-                src={targetedPost.post.userImg}
-                width={100}
-                height={100}
-                alt={`${targetedPost.post.user} ava`}
-                className="w-[50px] h-[50px] rounded-full"
-              />
-              <div>
+              <div className=" relative flex flex-col gap-0 items-center">
+                <Image
+                  src={targetedPost.post.userImg}
+                  width={100}
+                  height={100}
+                  alt={`${targetedPost.post.user} ava`}
+                  className="w-[50px] h-[50px] rounded-full z-10"
+                />
+                <div className="h-full min-h-[50px] flex-1 w-[2px] bg-slate-500/20"></div>
+              </div>
+              <div className="pb-5">
                 <p className="font-bold text-lg">{targetedPost.post.user}</p>
                 <p>{targetedPost.post.content}</p>
               </div>
             </div>
-            <div className="mt-10 mx-auto w-fit">
-              <p className="underline text-[0.9rem]">
-                Reply to{" "}
-                <span className="font-bold">{targetedPost.post.user}</span>
-              </p>
-            </div>
-            <div className="mt-5 flex gap-5 bg-white rounded-xl m-[-10px] p-[10px]">
+            <div className="flex gap-5 bg-white rounded-xl m-[-10px] p-[10px]">
               <div>
                 <Image
                   src={sessionData?.user.image!}
@@ -94,7 +109,9 @@ export default function CommentModal() {
 
               <div className="flex-1 flex flex-col divide-y">
                 <div className="">
-                  <p className="font-bold">{sessionData?.user?.name}</p>
+                  <p className="font-bold text-[1.5rem]">
+                    {sessionData?.user?.name}
+                  </p>
                 </div>
                 <div className="pt-3 w-full">
                   <textarea
@@ -158,6 +175,7 @@ export default function CommentModal() {
                   <button
                     disabled={comment ? false : true}
                     className="rounded-full bg-[rgb(29,155,240)] font-semibold px-4 py-2 text-white disabled:opacity-50"
+                    onClick={sendComment}
                   >
                     Tweet
                   </button>
